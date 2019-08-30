@@ -2,13 +2,13 @@ import alquimistas.*
 describe "testDeAlquimistas"{
 
 
-test "unAlquimistaTieneCriterio" {
+test "Un alquimista tiene Criterio" {
 	assert.that(alquimista.tieneCriterio())
 }
-test "unAlquimistaTieneCriterio si no tiene items de combate"{
+test "Un alquimista tiene Criterio si no tiene items de combate"{
 	assert.that(alquimista.tieneCriterio())
 }
-test "unAlquimistaTieneCriterio teniendo items de combate"{
+test "Un alquimista tiene Criterio teniendo items de combate"{
 	bomba.cambiarDanio(125)
 	alquimista.agregarItem(bomba)
 	pocion.cambiarPoderCurativo(60)
@@ -77,5 +77,87 @@ test "Calidad Pociones con material mistico"{
 	pocion.agregarMaterial(unMaterialMistico)
 	assert.that(pocion.calidad() == 10)
 }
-
+test "Calidad Debilitadores"{
+	debilitador.agregarMaterial(unMaterial)
+	debilitador.agregarMaterial(unMaterialMistico)
+	assert.that(debilitador.calidad() == 12.5)
+}
+test "Suma de calidades (Items de combate)"{
+	debilitador.agregarMaterial(unMaterial)
+	debilitador.agregarMaterial(unMaterialMistico)
+	alquimista.agregarItem(debilitador)
+	pocion.agregarMaterial(unMaterial)
+	alquimista.agregarItem(pocion)
+	bomba.agregarMaterial(unMaterialMistico)
+	bomba.agregarMaterial(unMaterial)
+	alquimista.agregarItem(bomba)
+	assert.that(alquimista.calidadItemsCombate() == 37.5)
+}
+test "Calidad Items de recoleccion"{
+	pocion.agregarMaterial(unMaterialMistico)
+	alquimista.agregarItemRecoleccion(pocion)
+	//Calidad pocion = 10
+	bomba.agregarMaterial(unMaterialMistico)
+	bomba.agregarMaterial(unMaterial)
+	alquimista.agregarItemRecoleccion(bomba)
+	//Calidad bomba = 10
+	assert.that(alquimista.calidadItemsDeRecoleccion() == 32)
+}
+test "Calidad total"{
+	pocion.agregarMaterial(unMaterialMistico)
+	alquimista.agregarItemRecoleccion(pocion)
+	//Calidad recoleccion = 31
+	bomba.agregarMaterial(unMaterialMistico)
+	bomba.agregarMaterial(unMaterial)
+	alquimista.agregarItem(bomba)
+	//Calidad combate = 10
+	assert.that(alquimista.calidadItemsTotal() == 41)
+}
+test "Calidad Promedio"{
+	pocion.agregarMaterial(unMaterialMistico)
+	alquimista.agregarItemRecoleccion(pocion)
+	//Calidad recoleccion = 31
+	bomba.agregarMaterial(materialAltaCalidad)
+	alquimista.agregarItem(bomba)
+	//Calidad combate = 100
+	assert.that(alquimista.calidadPromedioItems() == 65.5)
+}
+test "Todos sus items de combate son efectivos"{
+	bomba.cambiarDanio(150)
+	alquimista.agregarItem(bomba)
+	assert.that(alquimista.todosItemsDeCombateEfectivos())
+}
+test "No es profesional si no es buen explorador"{
+	bomba.agregarMaterial(materialAltaCalidad)
+	bomba.cambiarDanio(150)
+	alquimista.agregarItem(bomba)
+	pocion.agregarMaterial(unMaterialMistico)
+	alquimista.agregarItemRecoleccion(pocion)				//Mismas condiciones que antes para items efectivos y promedio>50
+	assert.that(alquimista.esProfesional().negate()) 		//No es profesional
+}
+test "No es profesional si su promedio de calidad es < 50"{
+	bomba.cambiarDanio(150)	
+	alquimista.agregarItem(bomba)							//Todos items de combate efectivos
+	alquimista.agregarItemRecoleccion(bomba)
+	alquimista.agregarItemRecoleccion(bomba)
+	alquimista.agregarItemRecoleccion(bomba)				//Es buen explorador
+	assert.that(alquimista.esProfesional().negate())
+}
+test "No es profesional si no son todos items de combate efectivos"{
+	bomba.agregarMaterial(materialAltaCalidad)				//Hace que el promedio sea >50
+	alquimista.agregarItem(bomba)							//Item de combate no efectivo
+	alquimista.agregarItemRecoleccion(bomba)
+	alquimista.agregarItemRecoleccion(bomba)
+	alquimista.agregarItemRecoleccion(bomba)				//Es buen explorador
+	assert.that(alquimista.esProfesional().negate())
+}
+test "Es profesional"{
+	bomba.cambiarDanio(150)	
+	bomba.agregarMaterial(materialAltaCalidad)				//Hace que el promedio sea >50
+	alquimista.agregarItem(bomba)							//Items de combate efectivo
+	alquimista.agregarItemRecoleccion(bomba)
+	alquimista.agregarItemRecoleccion(bomba)
+	alquimista.agregarItemRecoleccion(bomba)				//Es buen explorador
+	assert.that(alquimista.esProfesional())
+}
 }
