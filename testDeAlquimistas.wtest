@@ -11,6 +11,7 @@ test "unAlquimistaTieneCriterio si no tiene items de combate"{
 test "unAlquimistaTieneCriterio teniendo items de combate"{
 	bomba.cambiarDanio(125)
 	alquimista.agregarItem(bomba)
+	pocion.cambiarPoderCurativo(60)
 	alquimista.agregarItem(pocion)
 	assert.that(alquimista.tieneCriterio())
 }
@@ -22,6 +23,37 @@ test "Un alquimista es buen explorador"{
 }
 test "Un alquimista no es buen explorador"{
 	assert.that(alquimista.buenExplorador().negate())
+}
+test "Capacidad Ofensiva Nula"{
+	assert. that(alquimista.capacidadOfensiva() == 0)
+}
+//---------------------------Revisar
+test "Capacidad Ofenciva al agregarle items de combate"{
+	alquimista.agregarItem(bomba)
+	assert. that(alquimista.capacidadOfensiva() == 0)
+}
+test "Capacidad bomba"{
+	bomba.cambiarDanio(100)
+	assert.that(bomba.capacidad() == 50)
+}
+test "Capacidad pocion sin material mistico" {
+	pocion.cambiarPoderCurativo(100)
+	assert.that(pocion.capacidad() == 100)
+}
+test "Capacidad pocion con material mistico"{
+	pocion.agregarMaterial(unMaterialMistico)
+	pocion.agregarMaterial(unMaterial)
+	pocion.agregarMaterial(unMaterialMistico)
+	assert.that(pocion.capacidad() == 20)
+}
+test "Capacidad debilitador por defecto"{
+	assert.that(debilitador.capacidad() == 5)
+}
+test "Capacidad debilitador con material mistico"{
+	debilitador.agregarMaterial(unMaterialMistico)
+	debilitador.agregarMaterial(unMaterial)
+	debilitador.agregarMaterial(unMaterialMistico)
+	assert.that(debilitador.capacidad() == 36)
 }
 
 
