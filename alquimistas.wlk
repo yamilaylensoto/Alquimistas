@@ -18,13 +18,13 @@ object alquimista {
  		return self.cantItemsDeRecoleccion() >= 3
  	}
  	method capacidadItemsDeCombate(){
- 		return itemsDeCombate.map{material => material.capacidad()}
+ 		return itemsDeCombate.map{item => item.capacidad()}
  	}
  	method capacidadOfensiva(){
  		return self.capacidadItemsDeCombate().sum()
  	}
  	method calidadItemsCombate(){
- 		return itemsDeCombate.map{material => material.calidad()}
+ 		return itemsDeCombate.map{item => item.calidad()}
  	}
  	method calidadPromedioItemsDeCombate(){
  		return self.calidadItemsCombate().sum() / self.cantidadItemsDeCombate()
@@ -81,8 +81,8 @@ object bomba{
 
 //.........................................................................................................................POCION
 object pocion{ 
-		var materiales= [unMaterialMistico, unMaterial]
-		var poderCurativo = 55
+		var materiales= []
+		var poderCurativo = 0
 	method esEfectivo(){
 		return poderCurativo > 50  && self.tieneMaterialMistico()
 	}
@@ -108,12 +108,18 @@ object pocion{
 		return poderCurativo + self.puntosExtras()
 	}
 	method primerosMateriales(){
-		if (self.tieneMaterialMistico()) return self.primerMaterialMistico().calidad()
-		else return self.primerMaterial().calidad()
+		if (self.tieneMaterialMistico()) return self.primerMaterialMistico()
+		else return self.primerMaterial()
+	}
+	method calidad(){
+		return self.primerosMateriales().calidad()
 	}
 //...........................................................................................................................test
 	method agregarMaterial(unMaterial){
 		materiales.add(unMaterial)
+	}
+	method cambiarPoderCurativo(nuevoPoder){
+		poderCurativo = nuevoPoder
 	}
 }
 
@@ -121,7 +127,7 @@ object pocion{
 
 //....................................................................................................................DEBILITADOR
 object debilitador{
-		var materiales=[unMaterialMistico, unMaterial]
+		var materiales=[]
 		var potencia = 0
 	method esEfectivo(){
 		return potencia > 0 && self.noTieneMaterialMistico()
@@ -135,9 +141,12 @@ object debilitador{
 	method noTieneMaterialMistico(){
 		return self.cantMaterialesMisticos() == 0
 	}
+	method cantidadMateriales(){
+		return materiales.size()
+	}
 	method capacidad(){
 		if (self.noTieneMaterialMistico())  return 5
-		else return 12 * self.cantMaterialesMisticos()
+		else return 12 * self.cantidadMateriales()
 	}
 	method calidadMateriales(){
 		return materiales.map{material => material.calidad()}
