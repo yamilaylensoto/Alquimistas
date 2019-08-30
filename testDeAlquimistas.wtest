@@ -113,7 +113,24 @@ test "Calidad total"{
 	//Calidad combate = 10
 	assert.that(alquimista.calidadItemsTotal() == 41)
 }
-test "Calidad Promedio"{
+test "Calidad Promedio cuando no hay items"{
+	assert.that(alquimista.calidadPromedioItems() == 0)
+}
+test "Calidad Promedio cuando hay items de combate"{
+	bomba.agregarMaterial(materialAltaCalidad)
+	alquimista.agregarItem(bomba)							//100
+	pocion.agregarMaterial(unMaterialMistico)
+	alquimista.agregarItem(pocion)							
+	assert.that(alquimista.calidadPromedioItems() == 70)	//Suman 30 por la base de los items de recoleccion=>(30+100+10)/2
+}
+test "Calidad Promedio cuando hay items de reoleccion"{
+	bomba.agregarMaterial(materialAltaCalidad)
+	alquimista.agregarItemRecoleccion(bomba)
+	pocion.agregarMaterial(unMaterialMistico)
+	alquimista.agregarItemRecoleccion(pocion)	
+	assert.that(alquimista.calidadPromedioItems() == 20.5)		//(30+110/10)/2
+}
+test "Calidad Promedio cuando hay items de combate y recoleccion"{
 	pocion.agregarMaterial(unMaterialMistico)
 	alquimista.agregarItemRecoleccion(pocion)
 	//Calidad recoleccion = 31
@@ -153,7 +170,7 @@ test "No es profesional si no son todos items de combate efectivos"{
 }
 test "Es profesional"{
 	bomba.cambiarDanio(150)	
-	bomba.agregarMaterial(materialAltaCalidad)				//Hace que el promedio sea >50
+	bomba.agregarMaterial(materialCalidad200)				//Hace que el promedio sea >50
 	alquimista.agregarItem(bomba)							//Items de combate efectivo
 	alquimista.agregarItemRecoleccion(bomba)
 	alquimista.agregarItemRecoleccion(bomba)

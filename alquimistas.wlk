@@ -216,3 +216,9 @@ object materialAltaCalidad{
 		return calidad
 	}
 }
+object materialCalidad200{
+		var calidad = 200
+	method calidad(){
+		return calidad
+	}
+}
