@@ -1,0 +1,28 @@
+import alquimistas.*
+describe "testDeAlquimistas"{
+
+
+test "unAlquimistaTieneCriterio" {
+	assert.that(alquimista.tieneCriterio())
+}
+test "unAlquimistaTieneCriterio si no tiene items de combate"{
+	assert.that(alquimista.tieneCriterio())
+}
+test "unAlquimistaTieneCriterio teniendo items de combate"{
+	bomba.cambiarDanio(125)
+	alquimista.agregarItem(bomba)
+	alquimista.agregarItem(pocion)
+	assert.that(alquimista.tieneCriterio())
+}
+test "Un alquimista es buen explorador"{
+	alquimista.agregarItemRecoleccion(bomba)
+	alquimista.agregarItemRecoleccion(bomba)
+	alquimista.agregarItemRecoleccion(bomba)
+	assert.that(alquimista.buenExplorador())
+}
+test "Un alquimista no es buen explorador"{
+	assert.that(alquimista.buenExplorador().negate())
+}
+
+
+}
