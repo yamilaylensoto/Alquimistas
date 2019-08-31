@@ -77,7 +77,14 @@ test "Calidad Pociones con material mistico"{
 	pocion.agregarMaterial(unMaterialMistico)
 	assert.that(pocion.calidad() == 10)
 }
-test "Calidad Debilitadores"{
+test "Calidad debilitadores sin materiales"{
+	assert.that(debilitador.calidad() == 0)
+}
+test "Calidad debilitadores con un material"{					//(0+10)/2
+	debilitador.agregarMaterial(unMaterialMistico)
+	assert.that(debilitador.calidad() == 5)
+}
+test "Calidad Debilitadores cuando hay materiales"{
 	debilitador.agregarMaterial(unMaterial)
 	debilitador.agregarMaterial(unMaterialMistico)
 	assert.that(debilitador.calidad() == 12.5)
@@ -114,14 +121,14 @@ test "Calidad total"{
 	assert.that(alquimista.calidadItemsTotal() == 41)
 }
 test "Calidad Promedio cuando no hay items"{
-	assert.that(alquimista.calidadPromedioItems() == 0)
+	assert.that(alquimista.calidadPromedioItems() == 0)			
 }
 test "Calidad Promedio cuando hay items de combate"{
 	bomba.agregarMaterial(materialAltaCalidad)
-	alquimista.agregarItem(bomba)							//100
+	alquimista.agregarItem(bomba)								//100
 	pocion.agregarMaterial(unMaterialMistico)
-	alquimista.agregarItem(pocion)							
-	assert.that(alquimista.calidadPromedioItems() == 70)	//Suman 30 por la base de los items de recoleccion=>(30+100+10)/2
+	alquimista.agregarItem(pocion)								//10
+	assert.that(alquimista.calidadPromedioItems() == 70)		//Suman 30 por la base de los items de recoleccion=>(30+100+10)/2
 }
 test "Calidad Promedio cuando hay items de reoleccion"{
 	bomba.agregarMaterial(materialAltaCalidad)
@@ -169,9 +176,9 @@ test "No es profesional si no son todos items de combate efectivos"{
 	assert.that(alquimista.esProfesional().negate())
 }
 test "Es profesional"{
-	bomba.cambiarDanio(150)	
+	bomba.cambiarDanio(150)									//Hace que los items de combate sean efectivos
 	bomba.agregarMaterial(materialCalidad200)				//Hace que el promedio sea >50
-	alquimista.agregarItem(bomba)							//Items de combate efectivo
+	alquimista.agregarItem(bomba)							
 	alquimista.agregarItemRecoleccion(bomba)
 	alquimista.agregarItemRecoleccion(bomba)
 	alquimista.agregarItemRecoleccion(bomba)				//Es buen explorador

@@ -12,21 +12,21 @@ object alquimista {
  	method tieneCriterio(){
  		return self.cantidadItemsDeCombate()/2 <= self.cantidadItemsDeCombateEfectivos()
  	}	
- //---Punto 2
+//---Punto 2
  	method cantItemsDeRecoleccion (){
  		return itemsDeRecoleccion.size()
  	}
  	method buenExplorador(){
  		return self.cantItemsDeRecoleccion() >= 3
  	}
- //---Punto 3
+//---Punto 3
  	method capacidadItemsDeCombate(){
  		return itemsDeCombate.map{item => item.capacidad()}
  	}
  	method capacidadOfensiva(){
  		return self.capacidadItemsDeCombate().sum()
  	}
- //---Punto 4
+//---Punto 4
  	method calidadItemsCombate(){
  		return itemsDeCombate.map{item => item.calidad()}.sum()
  	}
@@ -36,6 +36,8 @@ object alquimista {
  	method calidadItemsDeRecoleccion(){
  		return 30 + self.calidadMaterialesRecoleccion() / 10
  	}
+ 	
+  //---Para items de combate y recoleccion
  	method cantidadItemsTotal(){
  		return self.cantidadItemsDeCombate() + self.cantItemsDeRecoleccion()
  	}
@@ -46,13 +48,19 @@ object alquimista {
  		if (self.cantidadItemsTotal() != 0) return self.calidadItemsTotal() / self.cantidadItemsTotal()
  		return 0
  	}
+ 	
+  //---Items de combate efectivos
  	method todosItemsDeCombateEfectivos(){
  		return itemsDeCombate.all{item => item.esEfectivo()}
  	}
+ 	
+  //---Es profesional
  	method esProfesional(){
  		return self.calidadPromedioItems() > 50 && self.todosItemsDeCombateEfectivos() && self.buenExplorador()
  	}
-//...........................................................................................................................test
+ 	
+ 	
+//---test
 	method agregarItem(unItem){
 		itemsDeCombate.add(unItem)
 	}
@@ -86,7 +94,8 @@ object bomba{
 		if (materiales.size() == 0) return 0
 		return self.calidadMateriales().min()
 	}
-//...........................................................................................................................test
+	
+//---test
 	method agregarMaterial(unMaterial){
 		materiales.add(unMaterial)
 	}
@@ -132,7 +141,8 @@ object pocion{
 	method calidad(){
 		return self.primerosMateriales().calidad()
 	}
-//...........................................................................................................................test
+	
+//---test
 	method agregarMaterial(unMaterial){
 		materiales.add(unMaterial)
 	}
@@ -147,6 +157,9 @@ object pocion{
 object debilitador{
 		var materiales=[]
 		var potencia = 0
+		var max1 = 0
+		var max2 = 0
+		var listaCalidades
 	method esEfectivo(){
 		return potencia > 0 && self.noTieneMaterialMistico()
 	}
@@ -174,18 +187,33 @@ object debilitador{
 	}
 	
 //PUNTO 4
-	method itemsMayorCalidad(){
-		return [unMaterial, unMaterialMistico]					//...............................................Quitar
-	}
 	method calDeItemsMayorCalidad(){
-		return self.itemsMayorCalidad().map{unItem => unItem.calidad()}
+		self.primerMaximo()
+		self.segundoMaximo()
+		return [max1, max2]	
+	}
+	method primerMaximo(){
+		listaCalidades = self.calidadMateriales()
+		if (listaCalidades.size() != 0) max1 = listaCalidades.max()
+	}
+	method borrarPrimerMaximo(){
+		self.primerMaximo()
+		listaCalidades.remove(max1)
+	}
+	method segundoMaximo(){
+		self.borrarPrimerMaximo()
+		if (listaCalidades.size() != 0) max2 = listaCalidades.max()
 	}
 	method calidad(){
 		return self.calDeItemsMayorCalidad().sum() / 2			//...............................................Debe dar 12.5
 	}
-//...........................................................................................................................test
+	
+//---test
 	method agregarMaterial(unMaterial){
 		materiales.add(unMaterial)
+	}
+	method listaCalidades(){
+		return listaCalidades
 	}
 }
 
